@@ -10,6 +10,7 @@ const NameGate = ({ onSuccess }: NameGateProps) => {
   const [name, setName] = useState('');
   const [error, setError] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
+  const [isRevealing, setIsRevealing] = useState(false);
 
   const correctNames = [
     'yesril unjuk ginting',
@@ -22,8 +23,11 @@ const NameGate = ({ onSuccess }: NameGateProps) => {
     const normalizedName = name.toLowerCase().trim();
     
     if (correctNames.includes(normalizedName)) {
-      localStorage.setItem('christmas-auth', 'true');
-      onSuccess();
+      setIsRevealing(true);
+      setTimeout(() => {
+        localStorage.setItem('christmas-auth', 'true');
+        onSuccess();
+      }, 2000);
     } else {
       setError(true);
       setIsShaking(true);
@@ -38,23 +42,55 @@ const NameGate = ({ onSuccess }: NameGateProps) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen flex flex-col items-center justify-center px-4 relative z-10"
+      className={`min-h-screen flex flex-col items-center justify-center px-4 relative z-10 transition-all duration-1000 ${
+        isRevealing ? '' : 'grayscale'
+      }`}
     >
-      {/* Decorative elements */}
+      {/* Decorative elements - hidden until reveal */}
       <motion.div
         className="absolute top-20 left-1/4 text-christmas-gold"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: isRevealing ? 1 : 0,
+          rotate: isRevealing ? 360 : 0 
+        }}
+        transition={{ duration: isRevealing ? 1 : 20, repeat: isRevealing ? 0 : Infinity, ease: "linear" }}
       >
         <Sparkles className="w-8 h-8 animate-twinkle" />
       </motion.div>
       <motion.div
         className="absolute bottom-32 right-1/4 text-christmas-gold"
-        animate={{ rotate: -360 }}
-        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: isRevealing ? 1 : 0,
+          rotate: isRevealing ? -360 : 0 
+        }}
+        transition={{ duration: isRevealing ? 1.2 : 25, repeat: isRevealing ? 0 : Infinity, ease: "linear" }}
       >
         <Sparkles className="w-6 h-6 animate-twinkle" style={{ animationDelay: '1s' }} />
       </motion.div>
+
+      {/* Additional sparkles that appear on reveal */}
+      {isRevealing && (
+        <>
+          <motion.div
+            className="absolute top-32 right-1/3 text-christmas-gold"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <Sparkles className="w-10 h-10 animate-twinkle" />
+          </motion.div>
+          <motion.div
+            className="absolute bottom-40 left-1/3 text-christmas-gold"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <Sparkles className="w-7 h-7 animate-twinkle" />
+          </motion.div>
+        </>
+      )}
 
       <motion.div
         initial={{ y: 30, opacity: 0 }}
@@ -63,15 +99,22 @@ const NameGate = ({ onSuccess }: NameGateProps) => {
         className="text-center mb-12"
       >
         <motion.h1 
-          className="font-script text-5xl sm:text-7xl md:text-8xl text-gradient-gold mb-4"
-          animate={{ scale: [1, 1.02, 1] }}
-          transition={{ duration: 3, repeat: Infinity }}
+          className={`font-script text-5xl sm:text-7xl md:text-8xl mb-4 transition-all duration-1000 ${
+            isRevealing ? 'text-gradient-gold' : 'text-muted-foreground/50'
+          }`}
+          animate={{ scale: isRevealing ? [1, 1.1, 1] : [1, 1.02, 1] }}
+          transition={{ duration: isRevealing ? 0.8 : 3, repeat: isRevealing ? 0 : Infinity }}
         >
           Merry Christmas
         </motion.h1>
-        <p className="font-display text-xl sm:text-2xl text-muted-foreground italic">
-          A special message awaits...
-        </p>
+        <motion.p 
+          className={`font-display text-xl sm:text-2xl italic transition-all duration-1000 ${
+            isRevealing ? 'text-foreground' : 'text-muted-foreground/30'
+          }`}
+          animate={{ opacity: isRevealing ? 1 : 0.5 }}
+        >
+          {isRevealing ? '✨ Welcome, my love! ✨' : 'A special message awaits...'}
+        </motion.p>
       </motion.div>
 
       <motion.div
@@ -91,19 +134,38 @@ const NameGate = ({ onSuccess }: NameGateProps) => {
           }
         `}</style>
         
-        <div className="bg-card/50 backdrop-blur-md border border-border/50 rounded-2xl p-8 sm:p-10 shadow-2xl">
+        <motion.div 
+          className={`backdrop-blur-md border rounded-2xl p-8 sm:p-10 shadow-2xl transition-all duration-1000 ${
+            isRevealing 
+              ? 'bg-card/50 border-christmas-gold/50 shadow-christmas-gold/20' 
+              : 'bg-card/20 border-border/20'
+          }`}
+          animate={{
+            boxShadow: isRevealing 
+              ? '0 0 60px rgba(212, 175, 55, 0.4)' 
+              : '0 10px 30px rgba(0, 0, 0, 0.1)'
+          }}
+        >
           <div className="flex justify-center mb-6">
             <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="text-primary"
+              animate={{ 
+                scale: isRevealing ? [1, 1.3, 1] : [1, 1.1, 1],
+              }}
+              transition={{ duration: isRevealing ? 0.5 : 1.5, repeat: isRevealing ? 2 : Infinity }}
+              className={`transition-colors duration-1000 ${
+                isRevealing ? 'text-primary' : 'text-muted-foreground/30'
+              }`}
             >
-              <Heart className="w-12 h-12 fill-primary" />
+              <Heart className={`w-12 h-12 transition-all duration-1000 ${
+                isRevealing ? 'fill-primary' : 'fill-muted-foreground/20'
+              }`} />
             </motion.div>
           </div>
 
-          <p className="font-display text-lg text-center text-muted-foreground mb-6">
-            Enter your name to unlock
+          <p className={`font-display text-lg text-center mb-6 transition-colors duration-1000 ${
+            isRevealing ? 'text-foreground' : 'text-muted-foreground/50'
+          }`}>
+            {isRevealing ? 'Opening your gift...' : 'Enter your name to unlock'}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -112,16 +174,26 @@ const NameGate = ({ onSuccess }: NameGateProps) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name..."
-              className="w-full px-6 py-4 bg-input/50 border border-border/50 rounded-xl font-display text-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all duration-300"
+              disabled={isRevealing}
+              className={`w-full px-6 py-4 rounded-xl font-display text-lg placeholder:text-muted-foreground/30 focus:outline-none transition-all duration-1000 ${
+                isRevealing 
+                  ? 'bg-primary/20 border-2 border-christmas-gold text-foreground' 
+                  : 'bg-input/20 border border-border/20 text-muted-foreground focus:ring-2 focus:ring-muted/30 focus:border-muted/30'
+              }`}
             />
             
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full py-4 bg-gradient-to-r from-primary to-christmas-burgundy text-primary-foreground font-display text-lg rounded-xl glow-red transition-all duration-300 hover:opacity-90"
+              disabled={isRevealing}
+              whileHover={{ scale: isRevealing ? 1 : 1.02 }}
+              whileTap={{ scale: isRevealing ? 1 : 0.98 }}
+              className={`w-full py-4 font-display text-lg rounded-xl transition-all duration-1000 ${
+                isRevealing 
+                  ? 'bg-gradient-to-r from-primary to-christmas-burgundy text-primary-foreground glow-red' 
+                  : 'bg-muted/30 text-muted-foreground/50 hover:bg-muted/40'
+              }`}
             >
-              Reveal My Gift
+              {isRevealing ? '💕 Opening...' : 'Reveal My Gift'}
             </motion.button>
           </form>
 
@@ -131,22 +203,24 @@ const NameGate = ({ onSuccess }: NameGateProps) => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="text-primary font-display text-center mt-4"
+                className="text-muted-foreground font-display text-center mt-4"
               >
-                Hmm, that's not right... Try again! 💕
+                Hmm, that's not right... Try again!
               </motion.p>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </motion.div>
 
       <motion.p
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={{ opacity: isRevealing ? 1 : 0.3 }}
         transition={{ delay: 1.2, duration: 0.8 }}
-        className="font-display text-sm text-muted-foreground mt-8 text-center"
+        className={`font-display text-sm mt-8 text-center transition-colors duration-1000 ${
+          isRevealing ? 'text-christmas-gold' : 'text-muted-foreground/30'
+        }`}
       >
-        ✨ This greeting is specially made for someone very special ✨
+        {isRevealing ? '✨ Made with all my love for you ✨' : '✨ This greeting is specially made for someone very special ✨'}
       </motion.p>
     </motion.div>
   );
