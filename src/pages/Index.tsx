@@ -1,12 +1,53 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import Snowfall from '@/components/Snowfall';
+import NameGate from '@/components/NameGate';
+import ChristmasGreeting from '@/components/ChristmasGreeting';
 
 const Index = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check localStorage for previous authentication
+    const auth = localStorage.getItem('christmas-auth');
+    if (auth === 'true') {
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, []);
+
+  const handleSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="font-script text-4xl text-gradient-gold animate-pulse">
+          Loading...
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background overflow-hidden relative">
+      {/* Background gradient overlay */}
+      <div className="fixed inset-0 bg-gradient-to-br from-christmas-burgundy/20 via-background to-christmas-dark pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
+      
+      {/* Snowfall effect */}
+      <Snowfall />
+      
+      {/* Main content */}
+      <AnimatePresence mode="wait">
+        {!isAuthenticated ? (
+          <NameGate key="gate" onSuccess={handleSuccess} />
+        ) : (
+          <ChristmasGreeting key="greeting" />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
