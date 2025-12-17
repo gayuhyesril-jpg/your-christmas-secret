@@ -1,5 +1,6 @@
 import { motion, Variants } from 'framer-motion';
 import { Heart, Star, Sparkles } from 'lucide-react';
+import PhotoGallery from './PhotoGallery';
 
 const ChristmasGreeting = () => {
   const containerVariants: Variants = {
@@ -137,6 +138,9 @@ const ChristmasGreeting = () => {
           </motion.div>
         </div>
       </motion.div>
+
+      {/* Photo Gallery Section */}
+      <PhotoGallery />
 
       <motion.div
         variants={itemVariants}
