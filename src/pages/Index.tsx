@@ -32,23 +32,25 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden relative">
-      {/* Background gradient overlay */}
-      <div className="fixed inset-0 bg-gradient-to-br from-christmas-burgundy/20 via-background to-christmas-dark pointer-events-none" />
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
-      
-      {/* Snowfall effect */}
-      <Snowfall />
-      
-      {/* Main content */}
+    <>
       <AnimatePresence mode="wait">
         {!isAuthenticated ? (
           <NameGate key="gate" onSuccess={handleSuccess} />
         ) : (
-          <ChristmasGreeting key="greeting" />
+          <div className="min-h-screen bg-background overflow-hidden relative">
+            {/* Background gradient overlay */}
+            <div className="fixed inset-0 bg-gradient-to-br from-christmas-burgundy/20 via-background to-christmas-dark pointer-events-none" />
+            <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
+            
+            {/* Snowfall effect */}
+            <Snowfall />
+            
+            {/* Main content */}
+            <ChristmasGreeting key="greeting" />
+          </div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 };
 
