@@ -4,10 +4,12 @@ import Snowfall from '@/components/Snowfall';
 import NameGate from '@/components/NameGate';
 import ChristmasGreeting from '@/components/ChristmasGreeting';
 import MusicPlayer from '@/components/MusicPlayer';
+import FestiveOverlay from '@/components/FestiveOverlay';
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [shouldPlayMusic, setShouldPlayMusic] = useState(false);
 
   useEffect(() => {
     // Check localStorage for previous authentication
@@ -42,15 +44,18 @@ const Index = () => {
             {/* Background gradient overlay */}
             <div className="fixed inset-0 bg-gradient-to-br from-christmas-burgundy/20 via-background to-christmas-dark pointer-events-none" />
             <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
+
+            {/* Twinkles, slow snow, string lights */}
+            <FestiveOverlay />
             
             {/* Snowfall effect */}
             <Snowfall />
             
             {/* Main content */}
-            <ChristmasGreeting key="greeting" />
+            <ChristmasGreeting key="greeting" onLoad={() => setShouldPlayMusic(true)} />
             
             {/* Music Player */}
-            <MusicPlayer />
+            <MusicPlayer autoPlay={shouldPlayMusic} />
           </div>
         )}
       </AnimatePresence>

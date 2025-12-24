@@ -1,8 +1,17 @@
+import { useEffect } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { Heart, Star, Sparkles } from 'lucide-react';
 import PhotoGallery from './PhotoGallery';
 
-const ChristmasGreeting = () => {
+interface ChristmasGreetingProps {
+  onLoad?: () => void;
+}
+
+const ChristmasGreeting = ({ onLoad }: ChristmasGreetingProps) => {
+  useEffect(() => {
+    onLoad?.();
+  }, [onLoad]);
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -78,7 +87,7 @@ const ChristmasGreeting = () => {
           transition={{ duration: 2, repeat: Infinity }}
         >
           <Star className="w-5 h-5 text-christmas-gold fill-christmas-gold" />
-          <span className="font-display text-2xl sm:text-3xl text-christmas-gold">2024</span>
+          <span className="font-display text-2xl sm:text-3xl text-christmas-gold">2025</span>
           <Star className="w-5 h-5 text-christmas-gold fill-christmas-gold" />
         </motion.div>
       </motion.div>
